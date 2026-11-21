@@ -1,48 +1,261 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NEXORA Studio | Admin</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEXORA | لوحة الإدارة</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--bg:#080d18;--panel:#101a2b;--panel2:#142238;--line:#22334d;--txt:#edf4ff;--muted:#91a3bd;--cyan:#49d9e8;--violet:#9b8cff;--green:#55d6a0}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0%,#182747 0,transparent 34%),var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
-button,input{font:inherit}.shell{display:grid;grid-template-columns:250px 1fr;min-height:100vh}.side{background:#0b1322;border-left:1px solid var(--line);padding:25px 18px}.brand{display:flex;align-items:center;gap:11px;font-weight:900;direction:ltr;justify-content:flex-end;letter-spacing:1px;margin-bottom:38px}.logo{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:grid;place-items:center;color:#07111c;font-weight:1000}.side small{color:var(--muted);display:block;margin:18px 10px 10px}.nav button{width:100%;padding:13px 14px;border:0;border-radius:12px;background:transparent;color:#b7c5d9;text-align:right;margin:3px 0;cursor:pointer}.nav button.active,.nav button:hover{background:#17263d;color:white}.nav button.active{box-shadow:inset -3px 0 var(--cyan)}.main{padding:30px;max-width:1400px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:30px}.top h1{font-size:26px;margin:0 0 5px}.muted{color:var(--muted)}.pill{border:1px solid var(--line);padding:9px 13px;border-radius:30px;color:var(--muted);font-size:13px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.card{background:linear-gradient(145deg,#142239,#0e1829);border:1px solid var(--line);border-radius:18px;padding:20px}.card .label{color:var(--muted);font-size:13px}.number{font-size:30px;font-weight:850;margin-top:12px}.accent{color:var(--cyan)}.section{margin-top:25px}.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.section h2{font-size:18px;margin:0}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px;background:#0e1828}table{border-collapse:collapse;width:100%;min-width:620px}th,td{text-align:right;padding:15px;border-bottom:1px solid var(--line);font-size:13px}th{color:var(--muted);font-weight:600;background:#111e32}td{color:#dce7f7}.empty{text-align:center;padding:35px;color:var(--muted)}.actions{display:flex;gap:10px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#17263d;color:var(--txt);padding:10px 15px;border-radius:11px;cursor:pointer}.btn.primary{background:linear-gradient(110deg,var(--cyan),#9a8cff);border:0;color:#07111c;font-weight:800}.login{max-width:420px;margin:9vh auto;padding:28px}.login h1{margin:0 0 8px}.login input{width:100%;margin:8px 0 14px;padding:13px;border-radius:11px;border:1px solid var(--line);background:#091322;color:white;direction:ltr}.login .btn{width:100%}.hidden{display:none!important}.notice{font-size:13px;color:var(--muted);line-height:1.8;margin-top:15px}.status{margin-top:12px;color:var(--cyan);font-size:13px;min-height:22px}
-@media(max-width:850px){.shell{grid-template-columns:1fr}.side{border-left:0;border-bottom:1px solid var(--line);padding:14px}.brand{margin:0 8px 12px}.nav{display:flex;overflow:auto;gap:5px}.nav button{white-space:nowrap;width:auto}.side small{display:none}.main{padding:20px 14px}.stats{grid-template-columns:repeat(2,1fr)}.top{align-items:flex-start;flex-direction:column}}
-@media(max-width:430px){.stats{grid-template-columns:1fr 1fr}.number{font-size:25px}.card{padding:15px}}
+*{box-sizing:border-box}
+body{margin:0;background:#0b1020;color:#f5f7ff;font-family:Tahoma,Arial,sans-serif;padding:20px}
+.container{max-width:1050px;margin:45px auto}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px}
+.logo{font-size:27px;font-weight:bold;color:#55dce9;direction:ltr}
+.card{background:#141d32;border:1px solid #293650;border-radius:18px;padding:25px;margin-bottom:20px}
+h1,h2{margin-top:0}
+.muted{color:#aab5cc}
+input{width:100%;padding:14px;margin:9px 0 17px;background:#0b1020;border:1px solid #394663;border-radius:10px;color:white;font-size:16px}
+button{background:linear-gradient(100deg,#48d9e8,#8b7cff);border:0;border-radius:10px;padding:13px 22px;font-weight:bold;cursor:pointer;color:#07111f}
+button:disabled{opacity:.5;cursor:not-allowed}
+#logout{background:#293650;color:white}
+#message{color:#ffb5b5;margin-top:12px}
+#dashboard{display:none}
+.stats{display:flex;gap:15px;flex-wrap:wrap}
+.stat{flex:1;min-width:150px;background:#0b1020;padding:18px;border-radius:12px}
+.stat strong{display:block;font-size:28px;color:#55dce9;margin-top:8px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{text-align:right;padding:13px;border-bottom:1px solid #293650;vertical-align:top}
+th{color:#55dce9}
+td{font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.small{font-size:13px;color:#aab5cc}
+@media(max-width:600px){body{padding:12px}.container{margin:20px auto}.card{padding:17px}header{align-items:flex-start;gap:10px;flex-wrap:wrap}}
 </style>
 </head>
 <body>
-<div id="loginView" class="login card">
- <div class="brand"><span>NEXORA STUDIO</span><span class="logo">N</span></div>
- <h1>دخول الإدارة</h1><p class="muted">لوحة إدارة المشاريع والطلبات</p>
- <label>البريد الإلكتروني</label><input id="email" type="email" autocomplete="username" placeholder="admin@example.com">
- <label>كلمة المرور</label><input id="password" type="password" autocomplete="current-password" placeholder="••••••••">
- <button class="btn primary" id="loginBtn">تسجيل الدخول</button>
- <div class="status" id="loginStatus"></div>
- <p class="notice">هذه صفحة واجهة أولية. سيتم ربط تسجيل الدخول وبيانات الطلبات بـ Supabase بعد ضبط صلاحيات حساب الإدارة.</p>
-</div>
-<div id="appView" class="shell hidden">
- <aside class="side"><div class="brand"><span>NEXORA STUDIO</span><span class="logo">N</span></div><small>مساحة العمل</small>
-  <nav class="nav"><button class="active">▦　نظرة عامة</button><button>▤　طلبات العملاء</button><button>◇　المشاريع</button><button>⌘　استوديو المواقع</button><button>⚙　الإعدادات</button></nav>
-  <div style="margin-top:35px"><button class="btn" id="logoutBtn" style="width:100%">تسجيل الخروج</button></div>
- </aside>
- <main class="main">
-  <div class="top"><div><h1>نظرة عامة</h1><div class="muted">مرحبًا بك في مساحة إدارة NEXORA</div></div><span class="pill">الإصدار الأول · لوحة الإدارة</span></div>
-  <div class="stats">
-   <div class="card"><div class="label">إجمالي الطلبات</div><div class="number accent" id="requestsCount">—</div></div>
-   <div class="card"><div class="label">طلبات جديدة</div><div class="number" id="newCount">—</div></div>
-   <div class="card"><div class="label">المشاريع</div><div class="number" id="projectsCount">—</div></div>
-   <div class="card"><div class="label">قيد التنفيذ</div><div class="number" id="activeCount">—</div></div>
+<div class="container">
+
+<header>
+  <div class="logo">NEXORA</div>
+  <div class="muted">ADMIN DASHBOARD</div>
+</header>
+
+<section class="card" id="login">
+  <h1>تسجيل دخول الإدارة</h1>
+  <p class="muted">سجّل الدخول بحساب مسؤول NEXORA.</p>
+
+  <form id="loginForm">
+    <label for="email">البريد الإلكتروني</label>
+    <input id="email" type="email" autocomplete="username" required>
+
+    <label for="password">كلمة المرور</label>
+    <input id="password" type="password" autocomplete="current-password" required>
+
+    <button id="loginButton" type="submit">تسجيل الدخول</button>
+  </form>
+
+  <p id="message" role="status"></p>
+</section>
+
+<section id="dashboard">
+  <div class="card">
+    <h1>لوحة الإدارة</h1>
+    <p class="muted">مرحبًا بك في لوحة إدارة NEXORA.</p>
+    <div class="actions">
+      <button id="refresh">تحديث الطلبات</button>
+      <button id="logout">تسجيل الخروج</button>
+    </div>
+    <p id="status" class="small"></p>
   </div>
-  <section class="section"><div class="section-head"><h2>أحدث طلبات العملاء</h2><button class="btn" id="refreshBtn">تحديث البيانات</button></div>
-   <div class="table-wrap"><table><thead><tr><th>العميل</th><th>البريد</th><th>تفاصيل الطلب</th><th>الحالة</th><th>التاريخ</th></tr></thead><tbody id="requestsBody"><tr><td colspan="5" class="empty">سيتم عرض الطلبات بعد ربط قاعدة البيانات.</td></tr></tbody></table></div>
-  </section>
-  <section class="section"><div class="section-head"><h2>مساحة إنشاء المواقع</h2></div><div class="card"><p class="muted">المحرر والمعاينة وحفظ ملفات HTML وCSS وJavaScript ستكون ضمن المرحلة التالية.</p><div class="actions"><button class="btn primary" disabled>مشروع جديد · قريبًا</button><button class="btn" disabled>فتح محرر الأكواد · قريبًا</button></div></div></section>
- </main>
+
+  <div class="card">
+    <div class="stats">
+      <div class="stat">
+        إجمالي الطلبات
+        <strong id="total">0</strong>
+      </div>
+      <div class="stat">
+        الطلبات الجديدة
+        <strong id="newCount">0</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>طلبات العملاء</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>الاسم</th>
+            <th>البريد الإلكتروني</th>
+            <th>تفاصيل الطلب</th>
+            <th>الحالة</th>
+            <th>التاريخ</th>
+          </tr>
+        </thead>
+        <tbody id="requestsBody">
+          <tr><td colspan="5">لم يتم تحميل الطلبات بعد.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
 </div>
+
 <script>
-document.getElementById('loginBtn').addEventListener('click',()=>{document.getElementById('loginStatus').textContent='لم يتم ربط تسجيل الدخول بعد. سنضبط Supabase Auth وصلاحيات المدير قبل تفعيل الدخول.'});
-document.getElementById('logoutBtn').addEventListener('click',()=>{document.getElementById('appView').classList.add('hidden');document.getElementById('loginView').classList.remove('hidden')});
-document.getElementById('refreshBtn').addEventListener('click',()=>alert('سيتم تفعيل تحديث الطلبات بعد ربط Supabase.'));
+const SUPABASE_URL = "https://okbbpucduevbciiqwowo.supabase.co";
+const SUPABASE_KEY = "sb_publishable_n8H5Qawv0xhdU9MwHn9lHA_dsR7L3SA";
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+const loginSection = document.getElementById("login");
+const dashboard = document.getElementById("dashboard");
+const message = document.getElementById("message");
+const statusText = document.getElementById("status");
+
+function showLogin(text = "") {
+  loginSection.style.display = "block";
+  dashboard.style.display = "none";
+  message.textContent = text;
+}
+
+function showDashboard() {
+  loginSection.style.display = "none";
+  dashboard.style.display = "block";
+  message.textContent = "";
+}
+
+async function verifyAdmin(user) {
+  const { data, error } = await db
+    .from("admin_users")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (error || !data) {
+    await db.auth.signOut();
+    showLogin("هذا الحساب ليس لديه صلاحية الإدارة.");
+    return false;
+  }
+
+  showDashboard();
+  await loadRequests();
+  return true;
+}
+
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const button = document.getElementById("loginButton");
+  button.disabled = true;
+  button.textContent = "جارٍ تسجيل الدخول...";
+  message.textContent = "";
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  const { data, error } = await db.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    showLogin("تعذر تسجيل الدخول. راجع البريد وكلمة المرور.");
+  } else {
+    await verifyAdmin(data.user);
+  }
+
+  button.disabled = false;
+  button.textContent = "تسجيل الدخول";
+});
+
+async function loadRequests() {
+  statusText.textContent = "جارٍ تحميل الطلبات...";
+  const body = document.getElementById("requestsBody");
+  body.replaceChildren();
+
+  let result = await db
+    .from("client_requests")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  // في حالة عدم وجود عمود created_at نجرب القراءة بدون ترتيب.
+  if (result.error) {
+    result = await db
+      .from("client_requests")
+      .select("*");
+  }
+
+  if (result.error) {
+    statusText.textContent = "تعذر تحميل الطلبات. راجع صلاحيات الجدول.";
+    console.error(result.error);
+    return;
+  }
+
+  const requests = result.data || [];
+  document.getElementById("total").textContent = requests.length;
+  document.getElementById("newCount").textContent =
+    requests.filter(r => String(r.status || "").toLowerCase() === "new").length;
+
+  if (!requests.length) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 5;
+    cell.textContent = "لا توجد طلبات حتى الآن.";
+    row.appendChild(cell);
+    body.appendChild(row);
+  }
+
+  requests.forEach(request => {
+    const row = document.createElement("tr");
+
+    const values = [
+      request.client_name || "—",
+      request.email || "—",
+      request.details || "—",
+      request.status || "—",
+      request.created_at
+        ? new Date(request.created_at).toLocaleString("ar-EG")
+        : "—"
+    ];
+
+    values.forEach(value => {
+      const cell = document.createElement("td");
+      cell.textContent = String(value);
+      row.appendChild(cell);
+    });
+
+    body.appendChild(row);
+  });
+
+  statusText.textContent = "تم تحميل الطلبات بنجاح.";
+}
+
+document.getElementById("refresh").addEventListener("click", loadRequests);
+
+document.getElementById("logout").addEventListener("click", async () => {
+  await db.auth.signOut();
+  showLogin("تم تسجيل الخروج.");
+});
+
+async function startApp() {
+  const { data, error } = await db.auth.getSession();
+
+  if (error || !data.session) {
+    showLogin();
+    return;
+  }
+
+  await verifyAdmin(data.session.user);
+}
+
+startApp();
 </script>
-</body></html>
+</body>
+</html>
