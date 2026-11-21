@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEXORA Studio | Admin</title>
+<style>
+:root{--bg:#080d18;--panel:#101a2b;--panel2:#142238;--line:#22334d;--txt:#edf4ff;--muted:#91a3bd;--cyan:#49d9e8;--violet:#9b8cff;--green:#55d6a0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0%,#182747 0,transparent 34%),var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input{font:inherit}.shell{display:grid;grid-template-columns:250px 1fr;min-height:100vh}.side{background:#0b1322;border-left:1px solid var(--line);padding:25px 18px}.brand{display:flex;align-items:center;gap:11px;font-weight:900;direction:ltr;justify-content:flex-end;letter-spacing:1px;margin-bottom:38px}.logo{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:grid;place-items:center;color:#07111c;font-weight:1000}.side small{color:var(--muted);display:block;margin:18px 10px 10px}.nav button{width:100%;padding:13px 14px;border:0;border-radius:12px;background:transparent;color:#b7c5d9;text-align:right;margin:3px 0;cursor:pointer}.nav button.active,.nav button:hover{background:#17263d;color:white}.nav button.active{box-shadow:inset -3px 0 var(--cyan)}.main{padding:30px;max-width:1400px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:30px}.top h1{font-size:26px;margin:0 0 5px}.muted{color:var(--muted)}.pill{border:1px solid var(--line);padding:9px 13px;border-radius:30px;color:var(--muted);font-size:13px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.card{background:linear-gradient(145deg,#142239,#0e1829);border:1px solid var(--line);border-radius:18px;padding:20px}.card .label{color:var(--muted);font-size:13px}.number{font-size:30px;font-weight:850;margin-top:12px}.accent{color:var(--cyan)}.section{margin-top:25px}.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.section h2{font-size:18px;margin:0}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px;background:#0e1828}table{border-collapse:collapse;width:100%;min-width:620px}th,td{text-align:right;padding:15px;border-bottom:1px solid var(--line);font-size:13px}th{color:var(--muted);font-weight:600;background:#111e32}td{color:#dce7f7}.empty{text-align:center;padding:35px;color:var(--muted)}.actions{display:flex;gap:10px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#17263d;color:var(--txt);padding:10px 15px;border-radius:11px;cursor:pointer}.btn.primary{background:linear-gradient(110deg,var(--cyan),#9a8cff);border:0;color:#07111c;font-weight:800}.login{max-width:420px;margin:9vh auto;padding:28px}.login h1{margin:0 0 8px}.login input{width:100%;margin:8px 0 14px;padding:13px;border-radius:11px;border:1px solid var(--line);background:#091322;color:white;direction:ltr}.login .btn{width:100%}.hidden{display:none!important}.notice{font-size:13px;color:var(--muted);line-height:1.8;margin-top:15px}.status{margin-top:12px;color:var(--cyan);font-size:13px;min-height:22px}
+@media(max-width:850px){.shell{grid-template-columns:1fr}.side{border-left:0;border-bottom:1px solid var(--line);padding:14px}.brand{margin:0 8px 12px}.nav{display:flex;overflow:auto;gap:5px}.nav button{white-space:nowrap;width:auto}.side small{display:none}.main{padding:20px 14px}.stats{grid-template-columns:repeat(2,1fr)}.top{align-items:flex-start;flex-direction:column}}
+@media(max-width:430px){.stats{grid-template-columns:1fr 1fr}.number{font-size:25px}.card{padding:15px}}
+</style>
+</head>
+<body>
+<div id="loginView" class="login card">
+ <div class="brand"><span>NEXORA STUDIO</span><span class="logo">N</span></div>
+ <h1>دخول الإدارة</h1><p class="muted">لوحة إدارة المشاريع والطلبات</p>
+ <label>البريد الإلكتروني</label><input id="email" type="email" autocomplete="username" placeholder="admin@example.com">
+ <label>كلمة المرور</label><input id="password" type="password" autocomplete="current-password" placeholder="••••••••">
+ <button class="btn primary" id="loginBtn">تسجيل الدخول</button>
+ <div class="status" id="loginStatus"></div>
+ <p class="notice">هذه صفحة واجهة أولية. سيتم ربط تسجيل الدخول وبيانات الطلبات بـ Supabase بعد ضبط صلاحيات حساب الإدارة.</p>
+</div>
+<div id="appView" class="shell hidden">
+ <aside class="side"><div class="brand"><span>NEXORA STUDIO</span><span class="logo">N</span></div><small>مساحة العمل</small>
+  <nav class="nav"><button class="active">▦　نظرة عامة</button><button>▤　طلبات العملاء</button><button>◇　المشاريع</button><button>⌘　استوديو المواقع</button><button>⚙　الإعدادات</button></nav>
+  <div style="margin-top:35px"><button class="btn" id="logoutBtn" style="width:100%">تسجيل الخروج</button></div>
+ </aside>
+ <main class="main">
+  <div class="top"><div><h1>نظرة عامة</h1><div class="muted">مرحبًا بك في مساحة إدارة NEXORA</div></div><span class="pill">الإصدار الأول · لوحة الإدارة</span></div>
+  <div class="stats">
+   <div class="card"><div class="label">إجمالي الطلبات</div><div class="number accent" id="requestsCount">—</div></div>
+   <div class="card"><div class="label">طلبات جديدة</div><div class="number" id="newCount">—</div></div>
+   <div class="card"><div class="label">المشاريع</div><div class="number" id="projectsCount">—</div></div>
+   <div class="card"><div class="label">قيد التنفيذ</div><div class="number" id="activeCount">—</div></div>
+  </div>
+  <section class="section"><div class="section-head"><h2>أحدث طلبات العملاء</h2><button class="btn" id="refreshBtn">تحديث البيانات</button></div>
+   <div class="table-wrap"><table><thead><tr><th>العميل</th><th>البريد</th><th>تفاصيل الطلب</th><th>الحالة</th><th>التاريخ</th></tr></thead><tbody id="requestsBody"><tr><td colspan="5" class="empty">سيتم عرض الطلبات بعد ربط قاعدة البيانات.</td></tr></tbody></table></div>
+  </section>
+  <section class="section"><div class="section-head"><h2>مساحة إنشاء المواقع</h2></div><div class="card"><p class="muted">المحرر والمعاينة وحفظ ملفات HTML وCSS وJavaScript ستكون ضمن المرحلة التالية.</p><div class="actions"><button class="btn primary" disabled>مشروع جديد · قريبًا</button><button class="btn" disabled>فتح محرر الأكواد · قريبًا</button></div></div></section>
+ </main>
+</div>
+<script>
+document.getElementById('loginBtn').addEventListener('click',()=>{document.getElementById('loginStatus').textContent='لم يتم ربط تسجيل الدخول بعد. سنضبط Supabase Auth وصلاحيات المدير قبل تفعيل الدخول.'});
+document.getElementById('logoutBtn').addEventListener('click',()=>{document.getElementById('appView').classList.add('hidden');document.getElementById('loginView').classList.remove('hidden')});
+document.getElementById('refreshBtn').addEventListener('click',()=>alert('سيتم تفعيل تحديث الطلبات بعد ربط Supabase.'));
+</script>
+</body></html>
